@@ -1,23 +1,42 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SectionTitle } from "../section-title";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Trash2, Dices } from "lucide-react";
+import { Loader2, PlusCircle, Trash2, Dices } from "lucide-react";
 import { Input } from "../ui/input";
+import { FontChoice, AspectRatioChoice, ApiTextGenerator } from "@/lib/types";
+import { CustomImagePreview } from "./CustomImagePreview";
 
-type FontChoice = "inter" | "crimson" | "caveat";
+const apiUrlOptions = [
+  {
+    name: "Stoic Sayings",
+    url: "/api/stoic",
+  },
+  {
+    name: "Kanye Quotes",
+    url: "/api/kanye",
+  },
+];
 
 export const GenerateImages = () => {
-  const [aspectRatio, setAspectRatio] = useState<"socialStory" | "socialPost">(
-    "socialPost",
-  );
+  const [aspectRatio, setAspectRatio] =
+    useState<AspectRatioChoice>("socialPost");
 
   const fonts: FontChoice[] = ["inter", "crimson", "caveat"];
   const [fontChoice, setFontChoice] = useState<FontChoice>("inter");
 
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [previewImageIndex, setPreviewImageIndex] = useState<number>(0);
+
+  const [selectedApi, setSelectedApi] = useState<string>("/api/stoic");
+  const [previewText, setPreviewText] = useState<ApiTextGenerator>({
+    title: "Lorem ipsum...",
+    subtitle: "dolor Sit Amet",
+  });
+
+  const [shufflingPreview, setShufflingPreview] = useState<boolean>(false);
+
   const addImageUrl = () => {
     setImageUrls([...imageUrls, ""]);
     setPreviewImageIndex(imageUrls.length - 1);
@@ -38,7 +57,27 @@ export const GenerateImages = () => {
     setPreviewImageIndex(Math.floor(Math.random() * imageUrls.length));
   };
 
-  console.log("CONFIG", aspectRatio, fontChoice);
+  const shufflePreview = async () => {
+    setShufflingPreview(true);
+    if (selectedApi) {
+      const response = await fetch(selectedApi);
+      const data = (await response.json()) as ApiTextGenerator;
+      setPreviewText(data);
+    }
+    setRandomImageIndex();
+    setShufflingPreview(false);
+  };
+
+  const changeSelectedApi = (url: string) => {
+    if (url === selectedApi) {
+      return;
+    }
+    setSelectedApi(url);
+  };
+
+  useEffect(() => {
+    shufflePreview();
+  }, [selectedApi]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full pt-36 max-w-3xl">
@@ -114,12 +153,9 @@ export const GenerateImages = () => {
       {/* Content */}
       <div className="pt-24" />
       <SectionTitle index={2} title="Content" />
-      <div className="text-xl flex flex-col items-center justify-center w-full pt-8 font-bold">
-        Image Backgrounds
-      </div>
       <div className="flex flex-row items-start justify-center w-full pt-8 gap-x-8">
-        {/* Image Background Input */}
         <div className="flex flex-1 items-start justify-center flex-col">
+          {/* Image Background Input */}
           <div className="w-full text-left text-lg pb-4">Image URLs</div>
           {imageUrls.map((imageUrl, index) => (
             <div
@@ -147,56 +183,75 @@ export const GenerateImages = () => {
               <PlusCircle className="mr-2 h-4 w-4" /> Add Image URL
             </Button>
           </div>
+
+          {/* Text Content API Input */}
+          <div className="w-full text-left text-lg pb-4 pt-8">Image Text</div>
+          <div className="w-full text-left italic text-md pb-4 pt-2">
+            Select a pre-configured API...
+          </div>
+          {apiUrlOptions.map((apiOption) => (
+            <div
+              key={apiOption.name}
+              className="flex flex-1 items-start justify-center w-full py-2"
+            >
+              <div
+                className={cn(
+                  "w-full h-12 bg-white rounded-sm aspect-socialStory text-black",
+                  "flex flex-col items-center justify-center font-bold",
+                  "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
+                  selectedApi === apiOption.url
+                    ? "border-2 border-red-600"
+                    : "border-2 border-transparent",
+                )}
+                onClick={() => changeSelectedApi(apiOption.url)}
+              >
+                <div className="capitalize text-lg font-normal">
+                  {apiOption.name}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="w-full text-left italic text-md pt-4">
+            ...or enter your own API URL
+          </div>
+          <div className="w-full text-left italic text-md pt-2">
+            Note: API must return JSON in the following format:
+          </div>
+          <div className="w-full text-left text-md mb-4 mt-2 bg-white bg-opacity-10 rounded-xl px-6 py-4">
+            <p>{`{`}</p>
+            <p className="pl-4">{`"title": "Lorem ipsum...",`}</p>
+            <p className="pl-4">{`"subtitle": "dolor Sit Amet",`}</p>
+            <p>{`}`}</p>
+          </div>
+          <div className="pt-2 flex w-full justify-start">
+            <Input
+              onChange={(e) => setSelectedApi(e?.target?.value)}
+              placeholder="https://..."
+              type="text"
+              value={selectedApi}
+              className="text-black"
+            />
+          </div>
         </div>
 
         {/* Image Background Preview */}
         <div className="flex flex-col flex-1 items-start justify-center">
           <div className="w-full text-left text-lg pb-4">Preview</div>
-          <div
-            className={cn(
-              "w-full flex flex-col justify-center items-start relative",
-            )}
-          >
-            <img
-              alt=""
-              src={imageUrls[previewImageIndex] || "/checkerboard.png"}
-              className={cn(
-                "w-full rounded-md object-cover absolute top-0 left-0 z-10",
-                aspectRatio === "socialStory"
-                  ? "aspect-socialStory"
-                  : "aspect-socialPost",
-              )}
-            />
-            <div
-              className={cn(
-                "w-full rounded-md flex flex-col justify-center items-center z-20",
-                "text-4xl text-black font-bold text-center",
-                "shadow-2xl",
-                fontChoice === "inter" && "font-inter",
-                fontChoice === "crimson" && "font-crimson",
-                fontChoice === "caveat" && "font-caveat",
-                aspectRatio === "socialStory"
-                  ? "aspect-socialStory"
-                  : "aspect-socialPost",
-              )}
-              style={{
-                WebkitTextStroke: "2px white",
-              }}
-            >
-              <div>Lorem ipsum...</div>
-              <div
-                className="text-xl text-black pt-4"
-                style={{
-                  WebkitTextStroke: "1px white",
-                }}
-              >
-                - dolor Sit Amet
-              </div>
-            </div>
-          </div>
+          <CustomImagePreview
+            title={previewText.title || "Lorem ipsum..."}
+            subtitle={previewText.subtitle || "dolor Sit Amet"}
+            aspectRatio={aspectRatio}
+            fontChoice={fontChoice}
+            imageSrc={imageUrls[previewImageIndex]}
+          />
           <div className="pt-4 w-full">
-            <Button variant="secondary" onClick={setRandomImageIndex}>
-              <Dices className="mr-2 h-4 w-4" /> Shuffle
+            <Button variant="secondary" onClick={shufflePreview}>
+              {shufflingPreview ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Dices className="mr-2 h-4 w-4" />
+              )}{" "}
+              Shuffle
             </Button>
           </div>
         </div>
