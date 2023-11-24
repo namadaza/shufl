@@ -46,6 +46,18 @@ Inputting the images and API endpoint into SHUFL, and generating the images give
 
 Done! Each of these images can be downloaded and ready for upload into Pinterest, Instagram, etc.
 
+# Technical Context
+This project leverages NextJS. We get the following benefits using this as our framework:
+- App router to build the app leveraging React Server Components under the hood keeps the initial bundle size low
+- NextJS’s mono repo structure to create a end-to-end typed environment between our front and backends using tools like `zod`
+  - Shared types in `src/lib/types`
+- Serverless deployment means I don’t have to worry about scaling either of my APIs
+    - Benefit of pricing structure prevents traffic spikes from bankrupting me
+    - Applies to both SHUFL and the ArabicBridge API endpoint I have setup
+- Nextjs’s `/public` folder automatically adds Vercel CDN support to our images
+- [shadcn](https://ui.shadcn.com/) component library helps quickly scaffold the UI
+- `<Image />` to render image results efficiently
+
 # NextJS Project
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
