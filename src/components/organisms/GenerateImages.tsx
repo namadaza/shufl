@@ -10,6 +10,10 @@ import { CustomImagePreview } from "./CustomImagePreview";
 
 const apiUrlOptions = [
   {
+    name: "Affirmations",
+    url: "/api/affirmations",
+  },
+  {
     name: "Stoic Sayings",
     url: "/api/stoic",
   },
