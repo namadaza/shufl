@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Crimson_Text, Caveat } from "next/font/google";
+import { Inter, Crimson_Text, Caveat, Ubuntu_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
+const ubuntuMono = Ubuntu_Mono({
+  subsets: ["latin"],
+  variable: "--font-ubuntu-mono",
+  weight: "400",
+});
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -36,6 +41,7 @@ export default function RootLayout({
           inter.variable,
           crimson.variable,
           caveat.variable,
+          ubuntuMono.variable,
         )}
       >
         {children}

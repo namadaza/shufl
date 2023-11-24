@@ -2,7 +2,7 @@
 
 import { AspectRatioChoice, FontChoice } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/button";
 
@@ -21,14 +21,27 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
   title,
   subtitle,
 }) => {
-  const randomId = Math.random().toString(36).substring(7);
+  const randomId = `shufl_${Math.random().toString(36).substring(7)}`;
   const ref = useRef<HTMLDivElement>(null);
 
   const finalImage = imageSrc || "/checkerboard.png";
 
+  let width;
+  let height;
+  switch (aspectRatio) {
+    case "socialStory":
+      width = 300;
+      height = 168;
+      break;
+    case "socialPost":
+      width = 300;
+      height = 400;
+      break;
+  }
+
   const onDownload = () => {
     if (ref?.current) {
-      html2canvas(ref.current, {
+      html2canvas(document.querySelector(`#${randomId}`) ?? ref.current, {
         useCORS: true,
         allowTaint: false,
       }).then((canvas) => {
@@ -36,7 +49,7 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
         // Create a download link
         const link = document.createElement("a");
         link.href = imageUrl;
-        link.download = `shufl_img_${randomId}.png`;
+        link.download = `${randomId}.png`;
         link.click();
       });
     }
@@ -46,22 +59,28 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
     <>
       <div
         ref={ref}
+        id={randomId}
         className={cn(
-          "w-full flex flex-col justify-center items-start relative",
+          "w-full flex flex-col justify-center items-start relative overflow-hidden",
+          "max-w-[280px] lg:max-w-[400px]",
+          aspectRatio === "socialStory"
+            ? "aspect-socialStory"
+            : "aspect-socialPost",
         )}
       >
         <img
           alt=""
           src={finalImage}
-          className={cn(
-            "w-full object-cover absolute top-0 left-0 z-10 opacity-80",
-            aspectRatio === "socialStory"
-              ? "aspect-socialStory"
-              : "aspect-socialPost",
-          )}
+          className={cn("h-full w-auto z-10", "relative max-w-none")}
+          style={{
+            transform: "translate(-50%, -50%)",
+            top: "50%",
+            left: "50%",
+          }}
         />
         <div
           className={cn(
+            "absolute top-0 left-0 h-full w-full",
             "w-full rounded-md flex flex-col justify-center items-center z-20",
             "text-2xl text-white font-bold text-center",
             "drop-shadow-lg p-4",
@@ -88,7 +107,9 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
         </div>
       </div>
       <div className="flex flex-row justify-center items-center w-full pt-4">
-        <Button onClick={onDownload}>Download</Button>
+        <Button className="w-full" onClick={onDownload}>
+          Download
+        </Button>
       </div>
     </>
   );

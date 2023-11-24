@@ -10,6 +10,7 @@ import {
   CustomImagePreview,
   CustomImagePreviewProps,
 } from "./CustomImagePreview";
+import { Dropzone } from "@/components/organisms/Dropzone";
 
 const apiUrlOptions = [
   {
@@ -26,17 +27,30 @@ const apiUrlOptions = [
   },
 ];
 
+const DEFAULT_CONFIG = {
+  selectedApi: "/api/stoic",
+  aspectRatio: "socialPost" as AspectRatioChoice,
+  fontChoice: "crimson" as FontChoice,
+  imageUrls: ["/stoic-1.jpg", "/stoic-2.jpg", "/stoic-3.jpg"],
+};
+
 export const GenerateImages = () => {
   const [aspectRatio, setAspectRatio] =
     useState<AspectRatioChoice>("socialPost");
 
   const fonts: FontChoice[] = ["inter", "crimson", "caveat"];
-  const [fontChoice, setFontChoice] = useState<FontChoice>("inter");
+  const [fontChoice, setFontChoice] = useState<FontChoice>(
+    DEFAULT_CONFIG.fontChoice,
+  );
 
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>(
+    DEFAULT_CONFIG.imageUrls,
+  );
   const [previewImageIndex, setPreviewImageIndex] = useState<number>(0);
 
-  const [selectedApi, setSelectedApi] = useState<string>("/api/stoic");
+  const [selectedApi, setSelectedApi] = useState<string>(
+    DEFAULT_CONFIG.selectedApi,
+  );
   const [previewText, setPreviewText] = useState<ApiTextGenerator>({
     title: "Lorem ipsum...",
     subtitle: "dolor Sit Amet",
@@ -50,9 +64,20 @@ export const GenerateImages = () => {
   const [generatingImageConfigs, setGeneratingImageConfigs] =
     useState<boolean>(false);
 
-  const addImageUrl = () => {
-    setImageUrls([...imageUrls, ""]);
-    setPreviewImageIndex(imageUrls.length - 1);
+  const addImageUrl = (imageUrl: string) => {
+    setImageUrls([...imageUrls, imageUrl]);
+    setPreviewImageIndex(imageUrls.length);
+  };
+  const appendFileAsImageUrl = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (!e.target || !e.target.result) {
+        return;
+      }
+      addImageUrl(e.target.result as string);
+    };
+
+    reader.readAsDataURL(file);
   };
   const removeImageUrl = (index: number) => {
     const newImageUrls = [...imageUrls];
@@ -112,83 +137,87 @@ export const GenerateImages = () => {
   }, [selectedApi]);
 
   return (
-    <div className="flex min-w-[520px] flex-col items-center justify-center w-full pt-36 max-w-3xl">
-      {/* Aspect Ratio */}
-      <SectionTitle index={1} title="Setup" />
-      <div className="text-xl flex flex-col items-center justify-center w-full pt-8 font-bold">
-        Aspect Ratio
-      </div>
-      <div className="flex flex-row items-start gap-x-8 justify-center w-full pt-8">
-        {/* 3:4 */}
-        <div className="flex flex-1 items-start justify-end">
-          <div
-            className={cn(
-              "bg-white rounded-sm aspect-socialPost w-1/2",
-              "text-black text-7xl h-full flex items-center justify-center",
-              "font-bold",
-              "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
-              aspectRatio === "socialPost"
-                ? "border-2 border-red-600"
-                : "border-2 border-transparent",
-            )}
-            onClick={() => setAspectRatio("socialPost")}
-          >
-            4:3
+    <div className="flex lg:min-w-[520px] flex-col items-center justify-center w-full pt-16 max-w-4xl">
+      <div className="pt-24" />
+      {/* Row Setup */}
+      <div className="flex flex-col-reverse lg:flex-row items-start justify-center w-full pt-8 gap-x-8">
+        {/* Main Content Column */}
+        <div className="flex flex-1 items-start justify-center flex-col">
+          {/* Aspect Ratio */}
+          <SectionTitle index={1} title="Setup" />
+          <div className="text-xl flex flex-col items-center justify-center w-full pt-8 font-bold">
+            Aspect Ratio
           </div>
-        </div>
+          <div className="flex flex-row items-start gap-x-8 justify-center w-full pt-8">
+            {/* 3:4 */}
+            <div className="flex flex-1 items-start justify-end">
+              <div
+                className={cn(
+                  "bg-white rounded-sm aspect-socialPost w-1/2",
+                  "text-black text-4xl h-full flex items-center justify-center",
+                  "font-bold",
+                  "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
+                  aspectRatio === "socialPost"
+                    ? "border-2 border-red-600"
+                    : "border-2 border-transparent",
+                )}
+                onClick={() => setAspectRatio("socialPost")}
+              >
+                4:3
+              </div>
+            </div>
 
-        {/* 9:16 */}
-        <div className="flex flex-1 items-start justify-start">
-          <div
-            className={cn(
-              "bg-white rounded-sm aspect-socialStory w-1/2 text-black text-7xl h-full",
-              "flex items-center justify-center font-bold",
-              "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
-              aspectRatio === "socialStory"
-                ? "border-2 border-red-600"
-                : "border-2 border-transparent",
-            )}
-            onClick={() => setAspectRatio("socialStory")}
-          >
-            9:16
-          </div>
-        </div>
-      </div>
-
-      {/* Font Choice */}
-      <div className="text-xl flex flex-col items-center justify-center w-full pt-12 font-bold">
-        Fonts
-      </div>
-      <div className="flex flex-row items-start gap-x-8 justify-center w-full pt-8">
-        {fonts.map((font) => (
-          <div key={font} className="flex flex-1 items-start justify-center">
-            <div
-              className={cn(
-                font === "inter" && "font-inter",
-                font === "crimson" && "font-crimson",
-                font === "caveat" && "font-caveat",
-                "w-full h-24 bg-white rounded-sm aspect-socialStory text-black",
-                "flex flex-col items-center justify-center font-bold",
-                "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
-                fontChoice === font
-                  ? "border-2 border-red-600"
-                  : "border-2 border-transparent",
-              )}
-              onClick={() => setFontChoice(font)}
-            >
-              <div className="capitalize text-2xl font-bold">{font}</div>
+            {/* 9:16 */}
+            <div className="flex flex-1 items-start justify-start">
+              <div
+                className={cn(
+                  "bg-white rounded-sm aspect-socialStory w-1/2 text-black text-4xl h-full",
+                  "flex items-center justify-center font-bold",
+                  "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
+                  aspectRatio === "socialStory"
+                    ? "border-2 border-red-600"
+                    : "border-2 border-transparent",
+                )}
+                onClick={() => setAspectRatio("socialStory")}
+              >
+                9:16
+              </div>
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Content */}
-      <div className="pt-24" />
-      <SectionTitle index={2} title="Content" />
-      <div className="flex flex-row items-start justify-center w-full pt-8 gap-x-8">
-        <div className="flex flex-1 items-start justify-center flex-col">
+          {/* Font Choice */}
+          <div className="text-xl flex flex-col items-center justify-center w-full pt-12 font-bold">
+            Fonts
+          </div>
+          <div className="flex flex-row items-start gap-x-8 justify-center w-full pt-8 pb-12">
+            {fonts.map((font) => (
+              <div
+                key={font}
+                className="flex flex-1 items-start justify-center"
+              >
+                <div
+                  className={cn(
+                    font === "inter" && "font-inter",
+                    font === "crimson" && "font-crimson",
+                    font === "caveat" && "font-caveat",
+                    "w-full h-24 bg-white rounded-sm aspect-socialStory text-black",
+                    "flex flex-col items-center justify-center font-bold",
+                    "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
+                    fontChoice === font
+                      ? "border-2 border-red-600"
+                      : "border-2 border-transparent",
+                  )}
+                  onClick={() => setFontChoice(font)}
+                >
+                  <div className="capitalize text-2xl font-bold">{font}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
           {/* Image Background Input */}
-          <div className="w-full text-left text-lg pb-4">Image URLs</div>
+          <SectionTitle index={2} title="Content" />
+          <div className="w-full text-left text-lg pb-4 pt-12">Image URLs</div>
           {imageUrls.map((imageUrl, index) => (
             <div
               key={index}
@@ -211,9 +240,7 @@ export const GenerateImages = () => {
             </div>
           ))}
           <div className="pt-2 flex w-full justify-start">
-            <Button variant="secondary" onClick={addImageUrl}>
-              <PlusCircle className="mr-2 h-4 w-4" /> Add Image URL
-            </Button>
+            <Dropzone onFileChange={(file) => appendFileAsImageUrl(file)} />
           </div>
 
           {/* Text Content API Input */}
@@ -249,7 +276,7 @@ export const GenerateImages = () => {
           <div className="w-full text-left italic text-md pt-2">
             Note: API must return JSON in the following format:
           </div>
-          <div className="w-full text-left text-md mb-4 mt-2 bg-white bg-opacity-10 rounded-xl px-6 py-4">
+          <div className="w-full text-left text-md mb-4 mt-2 bg-white bg-opacity-10 rounded-xl px-6 py-4 font-ubuntuMono">
             <p>{`{`}</p>
             <p className="pl-4">{`"title": "Lorem ipsum...",`}</p>
             <p className="pl-4">{`"subtitle": "dolor Sit Amet",`}</p>
@@ -267,8 +294,10 @@ export const GenerateImages = () => {
         </div>
 
         {/* Image Background Preview */}
-        <div className="flex flex-col flex-1 items-start justify-center">
-          <div className="w-full text-left text-lg pb-4">Preview</div>
+        <div className="flex flex-col flex-1 items-center lg:items-start justify-center lg:pb-0 pb-12 w-full">
+          <div className="w-full text-center lg:text-left text-lg pb-4 hidden lg:block">
+            Preview
+          </div>
           <CustomImagePreview
             title={previewText.title || "Lorem ipsum..."}
             subtitle={previewText.subtitle || "dolor Sit Amet"}
@@ -277,7 +306,11 @@ export const GenerateImages = () => {
             imageSrc={imageUrls[previewImageIndex]}
           />
           <div className="pt-4 w-full">
-            <Button variant="secondary" onClick={shufflePreview}>
+            <Button
+              className="w-full"
+              variant="secondary"
+              onClick={shufflePreview}
+            >
               {shufflingPreview ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
@@ -313,7 +346,7 @@ export const GenerateImages = () => {
           {generatedImageConfigs.map((config, index) => (
             <div
               key={index}
-              className="flex w-72 items-start justify-center flex-col"
+              className="flex w-80 items-start justify-center flex-col"
             >
               <CustomImagePreview {...config} />
             </div>

@@ -5,7 +5,7 @@ import { gradientStyles, textGradientSupporStyles } from "@/lib/styleUtils";
 
 export default function Home() {
   return (
-    <div className="w-screen h-full min-h-screen flex flex-col bg-neutral-950 text-white items-center justify-start pb-32">
+    <div className="w-screen h-full min-h-screen flex flex-col bg-neutral-950 text-white items-center justify-start pb-32 px-4">
       <div className="w-full max-w-7xl flex flex-col items-center justify-center">
         {/* Logo */}
         <div className="flex items-center justify-center flex-row w-full pt-24">
@@ -33,7 +33,7 @@ export default function Home() {
         <div className="flex items-center justify-center flex-col w-full pt-24">
           <div
             className={cn(
-              "text-6xl font-bold w-full text-center",
+              "text-4xl lg:text-6xl font-bold w-full text-center",
               gradientStyles,
               textGradientSupporStyles,
             )}

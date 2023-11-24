@@ -19,6 +19,7 @@ module.exports = {
         caveat: ["var(--font-caveat)", "cursive"],
         crimson: ["var(--font-crimson)", "serif"],
         inter: ["var(--font-inter)", "sans-serif"],
+        ubuntuMono: ["var(--font-ubuntu-mono)", "monospace"],
       },
       aspectRatio: {
         socialPost: "3 / 4",
