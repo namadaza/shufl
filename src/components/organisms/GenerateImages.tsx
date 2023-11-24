@@ -40,6 +40,7 @@ const DEFAULT_CONFIG = {
 };
 
 export const GenerateImages = () => {
+  const [apiError, setApiError] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] =
     useState<AspectRatioChoice>("socialPost");
 
@@ -103,12 +104,18 @@ export const GenerateImages = () => {
   const shufflePreview = async () => {
     setShufflingPreview(true);
     if (selectedApi) {
-      const response = await fetch(selectedApi);
-      const data = ApiTextGeneratorSchema.parse(await response.json());
-      setPreviewText(data);
+      try {
+        const response = await fetch(selectedApi);
+        const data = ApiTextGeneratorSchema.parse(await response.json());
+        setPreviewText(data);
+        setRandomImageIndex();
+        setShufflingPreview(false);
+      } catch (e) {
+        setApiError(`Error: ${(e as any).message}`);
+        setShufflingPreview(false);
+        return;
+      }
     }
-    setRandomImageIndex();
-    setShufflingPreview(false);
   };
 
   const changeSelectedApi = (url: string) => {
@@ -116,6 +123,7 @@ export const GenerateImages = () => {
       return;
     }
     setSelectedApi(url);
+    setApiError(null);
   };
 
   const onGenerateImages = async () => {
@@ -324,6 +332,11 @@ export const GenerateImages = () => {
               Shuffle
             </Button>
           </div>
+          {apiError && (
+            <div className="pt-4 w-full">
+              <div className="text-red-600">{apiError}</div>
+            </div>
+          )}
         </div>
       </div>
 
