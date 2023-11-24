@@ -72,7 +72,7 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
         <Image
           alt=""
           src={finalImage}
-          className={cn("h-full w-auto z-10", "relative max-w-none")}
+          className={cn("h-full w-full z-10", "relative max-w-none")}
           width={800}
           height={800}
           style={{

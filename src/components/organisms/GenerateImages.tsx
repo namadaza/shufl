@@ -108,7 +108,10 @@ export const GenerateImages = () => {
       try {
         const response = await fetch(selectedApi);
         const data = ApiTextGeneratorSchema.parse(await response.json());
-        setPreviewText(data);
+        setPreviewText({
+          title: truncateQuote(data.title),
+          subtitle: data.subtitle,
+        });
         setRandomImageIndex();
         setShufflingPreview(false);
       } catch (e) {
