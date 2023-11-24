@@ -5,7 +5,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PackagePlus, Loader2, PlusCircle, Trash2, Dices } from "lucide-react";
 import { Input } from "../ui/input";
-import { FontChoice, AspectRatioChoice, ApiTextGenerator } from "@/lib/types";
+import {
+  FontChoice,
+  AspectRatioChoice,
+  ApiTextGenerator,
+  ApiTextGeneratorSchema,
+} from "@/lib/types";
 import {
   CustomImagePreview,
   CustomImagePreviewProps,
@@ -99,7 +104,7 @@ export const GenerateImages = () => {
     setShufflingPreview(true);
     if (selectedApi) {
       const response = await fetch(selectedApi);
-      const data = (await response.json()) as ApiTextGenerator;
+      const data = ApiTextGeneratorSchema.parse(await response.json());
       setPreviewText(data);
     }
     setRandomImageIndex();

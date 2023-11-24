@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export type CustomImagePreviewProps = {
   imageSrc: string;
@@ -68,10 +69,12 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
             : "aspect-socialPost",
         )}
       >
-        <img
+        <Image
           alt=""
           src={finalImage}
           className={cn("h-full w-auto z-10", "relative max-w-none")}
+          width={800}
+          height={800}
           style={{
             transform: "translate(-50%, -50%)",
             top: "50%",
