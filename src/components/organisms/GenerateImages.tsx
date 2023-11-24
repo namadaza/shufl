@@ -112,7 +112,7 @@ export const GenerateImages = () => {
   }, [selectedApi]);
 
   return (
-    <div className="flex min-w-min flex-col items-center justify-center w-full pt-36 max-w-3xl">
+    <div className="flex min-w-[520px] flex-col items-center justify-center w-full pt-36 max-w-3xl">
       {/* Aspect Ratio */}
       <SectionTitle index={1} title="Setup" />
       <div className="text-xl flex flex-col items-center justify-center w-full pt-8 font-bold">
@@ -309,11 +309,11 @@ export const GenerateImages = () => {
         </div>
       </div>
       {generatedImageConfigs.length > 0 && (
-        <div className="flex flex-row items-start justify-start w-full pt-8 gap-8">
+        <div className="flex flex-row flex-wrap items-start justify-start w-full pt-8 gap-8">
           {generatedImageConfigs.map((config, index) => (
             <div
               key={index}
-              className="flex w-72  items-start justify-center flex-col"
+              className="flex w-72 items-start justify-center flex-col"
             >
               <CustomImagePreview {...config} />
             </div>

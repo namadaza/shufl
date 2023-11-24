@@ -30,7 +30,7 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
     if (ref?.current) {
       html2canvas(ref.current, {
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
       }).then((canvas) => {
         const imageUrl = canvas.toDataURL(); // Convert canvas to data URL
         // Create a download link
