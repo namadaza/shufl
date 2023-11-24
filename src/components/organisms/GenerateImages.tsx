@@ -103,6 +103,7 @@ export const GenerateImages = () => {
 
   const shufflePreview = async () => {
     setShufflingPreview(true);
+    setApiError(null);
     if (selectedApi) {
       try {
         const response = await fetch(selectedApi);
