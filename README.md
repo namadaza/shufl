@@ -6,7 +6,7 @@ https://shufl-pearl.vercel.app/
 ## The Problem
 Consumers love meaningful content. Often as developers we may be serving meaningful quotes by way of daily affirmation apps, vocabulary apps, or religious apps.
 
-We see these apps have lots of success in the marketplace, for example the Motivation App by Monkey Taps has an incredible 1.3million followers, ~300k monthly downloads, and ~$400k MRR
+We see these apps have lots of success in the marketplace, for example the [Motivation App](https://www.instagram.com/motivationapp/) by [Monkey Taps](https://monkeytaps.net/) has an incredible 1.3million followers, ~300k monthly downloads, and ~$400k MRR
 <img width="1012" alt="image" src="https://github.com/namadaza/shufl/assets/2212486/2f52bc22-3537-421c-8be1-f77aa5f8a4b1">
 <img width="491" alt="image" src="https://github.com/namadaza/shufl/assets/2212486/4cc9125a-eb96-44e1-988b-d45fce25fd33">
 
