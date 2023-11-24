@@ -3,10 +3,13 @@ import React, { useEffect, useState } from "react";
 import { SectionTitle } from "../section-title";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Loader2, PlusCircle, Trash2, Dices } from "lucide-react";
+import { PackagePlus, Loader2, PlusCircle, Trash2, Dices } from "lucide-react";
 import { Input } from "../ui/input";
 import { FontChoice, AspectRatioChoice, ApiTextGenerator } from "@/lib/types";
-import { CustomImagePreview } from "./CustomImagePreview";
+import {
+  CustomImagePreview,
+  CustomImagePreviewProps,
+} from "./CustomImagePreview";
 
 const apiUrlOptions = [
   {
@@ -40,6 +43,12 @@ export const GenerateImages = () => {
   });
 
   const [shufflingPreview, setShufflingPreview] = useState<boolean>(false);
+
+  const [generatedImageConfigs, setGeneratedImageConfigs] = useState<
+    CustomImagePreviewProps[]
+  >([]);
+  const [generatingImageConfigs, setGeneratingImageConfigs] =
+    useState<boolean>(false);
 
   const addImageUrl = () => {
     setImageUrls([...imageUrls, ""]);
@@ -79,6 +88,25 @@ export const GenerateImages = () => {
     setSelectedApi(url);
   };
 
+  const onGenerateImages = async () => {
+    // Create 5 config objects for the images, append to the array
+    setGeneratingImageConfigs(true);
+    const newGeneratedImageConfigs: CustomImagePreviewProps[] = [];
+    for (let i = 0; i < 5; i++) {
+      const response = await fetch(selectedApi);
+      const data = (await response.json()) as ApiTextGenerator;
+      newGeneratedImageConfigs.push({
+        title: data.title,
+        subtitle: data.subtitle,
+        aspectRatio,
+        fontChoice,
+        imageSrc: imageUrls[Math.floor(Math.random() * imageUrls.length)],
+      });
+    }
+    setGeneratedImageConfigs((prev) => [...newGeneratedImageConfigs, ...prev]);
+    setGeneratingImageConfigs(false);
+  };
+
   useEffect(() => {
     shufflePreview();
   }, [selectedApi]);
@@ -95,7 +123,7 @@ export const GenerateImages = () => {
         <div className="flex flex-1 items-start justify-end">
           <div
             className={cn(
-              "bg-white rounded-sm aspect-socialPost w-3/4",
+              "bg-white rounded-sm aspect-socialPost w-1/2",
               "text-black text-7xl h-full flex items-center justify-center",
               "font-bold",
               "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
@@ -113,7 +141,7 @@ export const GenerateImages = () => {
         <div className="flex flex-1 items-start justify-start">
           <div
             className={cn(
-              "bg-white rounded-sm aspect-socialStory w-3/4 text-black text-7xl h-full",
+              "bg-white rounded-sm aspect-socialStory w-1/2 text-black text-7xl h-full",
               "flex items-center justify-center font-bold",
               "transition-all duration-100 ease-in hover:border-2 hover:border-red-600 cursor-pointer",
               aspectRatio === "socialStory"
@@ -260,6 +288,38 @@ export const GenerateImages = () => {
           </div>
         </div>
       </div>
+
+      {/* Generate Images */}
+      <div className="pt-24" />
+      <SectionTitle index={3} title="Generate Images" />
+      <div className="flex flex-row items-start justify-center w-full pt-8 gap-x-8">
+        <div className="flex flex-1 items-start justify-center flex-col">
+          <Button
+            variant="secondary"
+            onClick={onGenerateImages}
+            disabled={generatingImageConfigs}
+          >
+            {generatingImageConfigs ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <PackagePlus className="mr-2 h-4 w-4" />
+            )}{" "}
+            Generate Images (5)
+          </Button>
+        </div>
+      </div>
+      {generatedImageConfigs.length > 0 && (
+        <div className="flex flex-row items-start justify-start w-full pt-8 gap-8">
+          {generatedImageConfigs.map((config, index) => (
+            <div
+              key={index}
+              className="flex w-72  items-start justify-center flex-col"
+            >
+              <CustomImagePreview {...config} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
