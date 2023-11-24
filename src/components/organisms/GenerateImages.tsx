@@ -112,7 +112,7 @@ export const GenerateImages = () => {
   }, [selectedApi]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full pt-36 max-w-3xl">
+    <div className="flex min-w-fit flex-col items-center justify-center w-full pt-36 max-w-3xl">
       {/* Aspect Ratio */}
       <SectionTitle index={1} title="Setup" />
       <div className="text-xl flex flex-col items-center justify-center w-full pt-8 font-bold">
