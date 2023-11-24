@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { SectionTitle } from "../section-title";
-import { cn } from "@/lib/utils";
+import { cn, truncateQuote } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PackagePlus, Loader2, PlusCircle, Trash2, Dices } from "lucide-react";
 import { Input } from "../ui/input";
@@ -126,7 +126,7 @@ export const GenerateImages = () => {
       const response = await fetch(selectedApi);
       const data = (await response.json()) as ApiTextGenerator;
       newGeneratedImageConfigs.push({
-        title: data.title,
+        title: truncateQuote(data.title),
         subtitle: data.subtitle,
         aspectRatio,
         fontChoice,
