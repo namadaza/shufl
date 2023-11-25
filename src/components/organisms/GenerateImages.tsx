@@ -133,19 +133,18 @@ export const GenerateImages = () => {
   const onGenerateImages = async () => {
     // Create 5 config objects for the images, append to the array
     setGeneratingImageConfigs(true);
-    const newGeneratedImageConfigs: CustomImagePreviewProps[] = [];
     for (let i = 0; i < 5; i++) {
       const response = await fetch(selectedApi);
       const data = (await response.json()) as ApiTextGenerator;
-      newGeneratedImageConfigs.push({
+      const newImageConfig: CustomImagePreviewProps = {
         title: truncateQuote(data.title),
         subtitle: data.subtitle,
         aspectRatio,
         fontChoice,
         imageSrc: imageUrls[Math.floor(Math.random() * imageUrls.length)],
-      });
+      };
+      setGeneratedImageConfigs((prev) => [newImageConfig, ...prev]);
     }
-    setGeneratedImageConfigs((prev) => [...newGeneratedImageConfigs, ...prev]);
     setGeneratingImageConfigs(false);
   };
 
