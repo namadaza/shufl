@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 export type CustomImagePreviewProps = {
   imageSrc: string;
@@ -62,19 +61,17 @@ export const CustomImagePreview: React.FC<CustomImagePreviewProps> = ({
         ref={ref}
         id={randomId}
         className={cn(
-          "w-full flex flex-col justify-center items-start relative overflow-hidden",
+          "w-full flex flex-col justify-center items-start relative overflow-hidden bg-black",
           "max-w-[280px] lg:max-w-[400px]",
           aspectRatio === "socialStory"
             ? "aspect-socialStory"
             : "aspect-socialPost",
         )}
       >
-        <Image
+        <img
           alt=""
           src={finalImage}
           className={cn("h-full w-auto z-10", "relative max-w-none")}
-          width={800}
-          height={800}
           style={{
             transform: "translate(-50%, -50%)",
             top: "50%",
