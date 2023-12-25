@@ -1,7 +1,7 @@
 # SHUFL
 https://shufl-pearl.vercel.app/
 
-<img width="704" alt="image" src="https://github.com/namadaza/shufl/assets/2212486/5f7ccabd-7367-4101-afab-7ee4885b7ee0">
+![Screenshot 2023-12-25 at 11 39 49 AM](https://github.com/namadaza/shufl/assets/2212486/d9ee1f48-5a87-40ec-8840-c0ef8701f63e)
 
 ## The Problem
 Consumers love meaningful content. Often as developers we may be serving meaningful quotes by way of daily affirmation apps, vocabulary apps, or religious apps.
