@@ -2,6 +2,7 @@ import { GenerateImages } from "@/components/organisms/GenerateImages";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { gradientStyles, textGradientSupporStyles } from "@/lib/styleUtils";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -27,6 +28,16 @@ export default function Home() {
           >
             SHUFL
           </div>
+        </div>
+        <div className="pt-4 text-sm">
+          Made by{" "}
+          <Link
+            className="underline"
+            href="https://amanazad.xyz"
+            target="_blank"
+          >
+            Aman Azad
+          </Link>
         </div>
 
         {/* H1 */}
